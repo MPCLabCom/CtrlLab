@@ -29,7 +29,7 @@ extern PI_CON      gstCurCtrl;
 /*===============================Output Variable=============================*/
 
 /*===============================Speed Control Variable=============================*/
-extern PI_CON      gstSpdCtrl_Tst;
+extern PI_CON       gstSpdCtrl_Tst;
 
 extern float32      gfOmega_vf;
 extern float32      gftheta_vf;
@@ -38,7 +38,7 @@ extern float32      gfVs_vf;
 /*======================================================================
     Variation PWM Frequency
 ======================================================================*/
-extern VARI_FREQ   gstVariFreq;
+extern VARI_FREQ    gstVariFreq;
 extern CUR_TEST     gstCurOn;
 //===========================================================================
 // External Function

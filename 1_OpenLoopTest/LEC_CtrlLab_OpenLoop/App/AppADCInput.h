@@ -60,8 +60,8 @@
 #define     OFFSET_FAULT    1
 #define     OFFSET_NORMAL   0
 
-#define     MAX_ADC_OFFSET      2240.0
-#define     MIN_ADC_OFFSET      2170.0
+#define     MAX_ADC_OFFSET      2280.0
+#define     MIN_ADC_OFFSET      2150.0
 
 //===========================================================================
 // Global Variable in AppADCInput
