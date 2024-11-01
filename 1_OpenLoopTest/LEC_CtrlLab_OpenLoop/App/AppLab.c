@@ -62,6 +62,9 @@ void AppLab_Init(void)
 void AppLab_Run_100usec(void)
 {
     //Do not use endless loop and loop logic.
+    gfTheta += gfFreq*_2PI*gfDeltaTime;
+    BOUND_RAD(gfTheta)
+    gfSig   = gfMag*__cos(gfTheta);
 }
 
 /*
@@ -76,6 +79,20 @@ void AppLab_Run_100usec(void)
 void AppLab_Cal_Mtr_Spd(float xfMecRad)
 {
     //Calculate rotation speed (rad/s)
+
+    gfMecRad = xfMecRad;
+    gfDeltaRad   = xfMecRad - gfMecRad_old;
+
+    BOUND_PI_RAD(gfDeltaRad)
+    gfSpdRad = gfDeltaRad*1000.0;   //w(rad/s) result set
+
+    //Calculate rotation speed (RPM, rev/min)
+    gfSpdRpm  = gfSpdRad*OMEGA_TO_RPM;
+
+    gfSpdRad_lpf = gfSpdRad_lpf*0.98 +  gfSpdRad*0.02; //Digital Filter
+    gfSpdRpm_lpf = gfSpdRpm_lpf*0.98 +  gfSpdRpm*0.02; //Digital Filter
+
+    gfMecRad_old = xfMecRad;
 }
 
 /*
@@ -90,9 +107,9 @@ void AppLab_Get_DAC(void)
 {
     if(0 == muiDacSel)
     {
-        gstDAC_CH1.gfDAC_Gain   = 1;
+        gstDAC_CH1.gfDAC_Gain   = 90.90909091;
         gstDAC_CH1.gfDAC_Value  = gfSig;
-        gstDAC_CH1.gfDAC_Offset = 0.0;
+        gstDAC_CH1.gfDAC_Offset = 454.5454545;
 
         gstDAC_CH2.gfDAC_Gain   = _3MAX1_MIN_1;
         gstDAC_CH2.gfDAC_Value  = 10;
@@ -110,13 +127,14 @@ void AppLab_Get_DAC(void)
     }
     else if(2 == muiDacSel)
     {
-        gstDAC_CH1.gfDAC_Value  = gstPosSen.SpdRpm_lpf;
-        gstDAC_CH1.gfDAC_Gain   = 1.0;  //3.3/1000.0
-        gstDAC_CH1.gfDAC_Offset = 0.0;
+        gstDAC_CH1.gfDAC_Value  = gfSpdRpm_lpf;
+        gstDAC_CH1.gfDAC_Gain   = _3MAX500_MIN_0; //100rpm
+        gstDAC_CH1.gfDAC_Offset = 0;
 
-        gstDAC_CH2.gfDAC_Value  = gstPosSen.MecDeg;
-        gstDAC_CH2.gfDAC_Gain   = 1.0;
-        gstDAC_CH2.gfDAC_Offset = 0.0;
+
+        gstDAC_CH2.gfDAC_Value   = gfMecRad;
+        gstDAC_CH2.gfDAC_Gain    =_3MAX360_MIN_0;  //Rad 0~2Pi DAC 0V~3V
+        gstDAC_CH2.gfDAC_Offset  = 0.0;
     }
     else
     {
